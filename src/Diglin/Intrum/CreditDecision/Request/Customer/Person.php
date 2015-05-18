@@ -394,6 +394,7 @@ class Person extends ADomElement
      * @param  array $extraInfo Extra Info
      * @param  bool $clear Clear
      * @return $this
+     * @throws \Exception
      */
     public function setExtraInfo(array $extraInfo, $clear = false)
     {
@@ -403,9 +404,11 @@ class Person extends ADomElement
 
         $extraInfoType = null;
         foreach ($extraInfo as $info) {
-            if (isset($info['name']) && isset($info['value'])) {
-                $this->extraInfo[] = array('type' => 'ExtraInfoType', 'name' => 'ExtraInfo', 'data' => $info);
+            if (empty($info["name"]) || !isset($info["value"])) {
+                throw new \Exception("ExtraInfo requires 'name' and 'value' keys");
             }
+
+            $this->extraInfo[] = array('type' => 'ExtraInfoType', 'name' => 'ExtraInfo', 'data' => $info);
         }
 
         return $this;

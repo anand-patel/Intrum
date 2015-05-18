@@ -28,6 +28,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 {
     protected $config;
 
+    protected $data  = array();
+
     protected function setUp()
     {
         $this->config = new \StdClass();
@@ -37,14 +39,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->config->email = 'support@diglin.com';
         $this->config->password = 'mypass';
 
-        parent::setUp();
-    }
-
-    public function testCreateXmlDocument()
-    {
-        $dom = new \DOMDocument("1.0", "UTF-8");
-
-        $data = array(
+        $this->data = array(
             'customer_reference' => 'my reference',
             'person' => array(
                 'first_name' => 'Sylvain',
@@ -75,13 +70,27 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             )
         );
 
+        parent::setUp();
+    }
+
+    public function testCreateXmlDocument()
+    {
+        $dom = new \DOMDocument("1.0", "UTF-8");
+
         /* @var $request Request */
         $request = $dom->appendChild(new Request());
-        $request->initAttributes($this->config);
-        $request->appendCustomer($data);
+
+        $request->setClientId($this->config->clientId);
+        $request->setUserID($this->config->userID);
+        $request->setPassword($this->config->password);
+        $request->setEmail($this->config->email);
+        $request->setRequestId($this->config->requestId);
+
+        $request->createRequest($this->data);
 
         print $dom->saveXML();
 
-        $this->assertTrue($dom->schemaValidate('http://site.intrum.ch/schema/CreditDecisionRequest140.xsd'), 'DOM Document not validate');
+        libxml_use_internal_errors(false);
+        $this->assertTrue($dom->schemaValidate($request->getNoNamespaceSchemaLocation()), 'DOM Document not validate');
     }
 }

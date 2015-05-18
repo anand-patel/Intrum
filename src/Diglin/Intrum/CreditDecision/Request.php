@@ -35,52 +35,85 @@ class Request extends ADomElement
     protected $elementName = 'Request';
 
     /**
-     * @var string
-     */
-    protected $version = '1.00';
-
-    /**
-     * @var string
-     */
-    protected $xmlnsXsi = 'http://www.w3.org/2001/XMLSchema-instance';
-
-    /**
-     * @var string
-     */
-    protected $noNamespaceSchemaLocation = 'http://site.intrum.ch/schema/CreditDecisionRequest131.xsd';
-
-    /**
-     * @var string
-     */
-    protected $validateSchema = 'http://site.intrum.ch/schema/CreditDecisionRequest140.xsd';
-
-    /**
      * @var Customer
      */
-    protected $customer;
+    private $customer;
 
     /**
-     * $config = new StdClass(
-     *  'clientId'  => int
-     *  'requestId' => int
-     *  'email'     => string
-     *  'userID'    => int
-     *  'password'  => string
-     * );
-     *
-     * @param \stdClass $config
+     * @var string
      */
-    public function initAttributes(\stdClass $config)
-    {
-//        $this->setAttribute("xmlns:xsi", $this->xmlnsXsi);
-//        $this->setAttribute("xsi:noNamespaceSchemaLocation", $this->noNamespaceSchemaLocation);
-        $this->setAttribute("Version",   (float) $this->version);
-        $this->setAttribute("ClientId",  (string) $config->clientId);
+    private $version = '1.00';
 
-        $this->setAttribute("RequestId", (string) (isset($config->requestId)) ? $config->requestId : '');
-        $this->setAttribute("Email",     (string) (isset($config->email)) ? $config->email : '');
-        $this->setAttribute("UserID",    (string) (isset($config->userID)) ? $config->userID : '');
-        $this->setAttribute("Password",  (string) (isset($config->password)) ? $config->password : '');
+    /**
+     * @var string
+     */
+    private $xmlnsXsi = 'http://www.w3.org/2001/XMLSchema-instance';
+
+    /**
+     * @var string
+     */
+    private $noNamespaceSchemaLocation = 'http://site.intrum.ch/schema/CreditDecisionRequest140.xsd';
+
+    /**
+     * @var string
+     */
+    private $clientId;
+
+    /**
+     * @var string
+     */
+    private $requestId;
+
+    /**
+     * @var string
+     */
+    private $email;
+
+    /**
+     * @var string
+     */
+    private $userID;
+
+    /**
+     * @var string
+     */
+    private $password;
+
+    /**
+     * @var string
+     */
+    private $siteId;
+
+    /**
+     * @var string
+     */
+    private $siteSubId;
+
+    /**
+     * @param array $data
+     * @return $this
+     * @throws \Exception
+     */
+    public function createRequest(array $data)
+    {
+        $this->initAttributes();
+        $this->appendCustomer($data);
+
+        return $this;
+    }
+
+    /**
+     * Set the Request Attributes
+     *
+     * @return $this
+     */
+    public function initAttributes()
+    {
+//        $this->setAttribute("xmlns:xsi", (string) $this->xmlnsXsi);
+//        $this->setAttribute("xsi:noNamespaceSchemaLocation", (string) $this->noNamespaceSchemaLocation);
+        $this->setAttribute("Version",   (float) $this->version);
+
+        return $this;
     }
 
     /**
@@ -92,30 +125,215 @@ class Request extends ADomElement
      */
     public function appendCustomer(array $data)
     {
-        $this->customer = $this->appendChild(new Customer());
-
         if (!isset($data['customer_reference'])) {
             throw new \Exception ('customer_reference data is required');
         }
 
-        $this->customer->setReference($data['customer_reference']);
+        $this->getCustomer()->setReference($data['customer_reference']);
 
         if (isset($data['person'])) {
-            $this->customer->appendPerson($data['person']);
+            $this->getCustomer()->appendPerson($data['person']);
         }
 
         if (isset($data['company'])) {
-            $this->customer->appendCompany($data['company']);
+            $this->getCustomer()->appendCompany($data['company']);
         }
 
+        return $this->getCustomer();
+    }
+
+    /**
+     * @return Customer
+     */
+    public function getCustomer()
+    {
+        if (!$this->customer instanceof Customer) {
+            $this->customer = $this->appendChild(new Customer());
+        }
         return $this->customer;
+    }
+
+    /**
+     * @param Customer $customer
+     * @return $this
+     */
+    public function setCustomer($customer)
+    {
+        $this->customer = $customer;
+
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getValidateSchema()
+    public function getNoNamespaceSchemaLocation()
     {
-        return $this->validateSchema;
+        return $this->noNamespaceSchemaLocation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param string $password
+     * @return $this
+     */
+    public function setPassword($password)
+    {
+        $this->setAttribute("Password", $password);
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClientId()
+    {
+        return $this->clientId;
+    }
+
+    /**
+     * @param string $clientId
+     * @return $this
+     */
+    public function setClientId($clientId)
+    {
+        $this->setAttribute("ClientId", $clientId);
+        $this->clientId = $clientId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestId()
+    {
+        return $this->requestId;
+    }
+
+    /**
+     * @param string $requestId
+     * @return $this
+     */
+    public function setRequestId($requestId)
+    {
+        $this->setAttribute("RequestId", $requestId);
+        $this->requestId = $requestId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     * @return $this
+     * @throws \Exception
+     */
+    public function setEmail($email)
+    {
+        if (!preg_match('/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/', $email)) {
+            throw new \Exception("Request Email is invalid");
+        }
+
+        $this->setAttribute("Email", $email);
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserID()
+    {
+        return $this->userID;
+    }
+
+    /**
+     * @param string $userID
+     * @return $this
+     */
+    public function setUserID($userID)
+    {
+        $this->setAttribute("UserID", $userID);
+        $this->userID = $userID;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSiteId()
+    {
+        return $this->siteId;
+    }
+
+    /**
+     * @param string $siteId
+     * @return $this
+     */
+    public function setSiteId($siteId)
+    {
+        $this->setAttribute("SiteId", $siteId);
+        $this->siteId = $siteId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSiteSubId()
+    {
+        return ($this->siteSubId) ? $this->siteSubId : null;
+    }
+
+    /**
+     * @param string $siteSubId
+     * @return $this
+     */
+    public function setSiteSubId($siteSubId)
+    {
+        $this->setAttribute("SiteSubId", $siteSubId);
+        $this->siteSubId = $siteSubId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     * @param string $version
+     * @return $this
+     */
+    public function setVersion($version)
+    {
+        $this->setAttribute("Version", $version);
+        $this->version = $version;
+
+        return $this;
     }
 }
