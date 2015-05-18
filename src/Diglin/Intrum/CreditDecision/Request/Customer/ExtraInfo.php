@@ -26,7 +26,7 @@ use Diglin\Intrum\CreditDecision\Request\ADomElement;
  * Class ExtraInfo
  * @package Diglin\Intrum\Request\Customer
  */
-class ExtraInfoType extends ADomElement
+class ExtraInfo extends ADomElement
 {
     /**
      * @var string

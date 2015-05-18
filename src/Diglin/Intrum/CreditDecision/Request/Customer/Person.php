@@ -79,22 +79,22 @@ class Person extends ADomElement
     protected $residentSince;
 
     /**
-     * @var AddressType
+     * @var Address
      */
     protected $currentAddress;
 
     /**
-     * @var AddressType
+     * @var Address
      */
     protected $previousAddress;
 
     /**
-     * @var CommunicationNumbersType
+     * @var CommunicationNumbers
      */
     protected $communicationNumbers;
 
     /**
-     * @var array ExtraInfoType
+     * @var array ExtraInfo
      */
     protected $extraInfo;
 
@@ -308,7 +308,7 @@ class Person extends ADomElement
     /**
      * Get Current Address
      *
-     * @return AddressType
+     * @return Address
      */
     public function getCurrentAddress()
     {
@@ -323,7 +323,8 @@ class Person extends ADomElement
      */
     public function setCurrentAddress(array $currentAddress)
     {
-        $this->currentAddress[] = array('type' => 'AddressType', 'name' => 'current_address', 'data' => $currentAddress);
+        $this->currentAddress = new Address('CurrentAddress');
+        $this->currentAddress->addData($currentAddress);
 
         return $this;
     }
@@ -331,7 +332,7 @@ class Person extends ADomElement
     /**
      * Get Previous Address
      *
-     * @return AddressType
+     * @return Address
      */
     public function getPreviousAddress()
     {
@@ -346,7 +347,8 @@ class Person extends ADomElement
      */
     public function setPreviousAddress(array $previousAddress)
     {
-        $this->previousAddress[] = array('type' => 'AddressType', 'name' => 'previous_address', 'data' => $previousAddress);
+        $this->previousAddress = new Address('PreviousAddress');
+        $this->previousAddress->addData($previousAddress);
 
         return $this;
     }
@@ -354,7 +356,7 @@ class Person extends ADomElement
     /**
      * Get Communication Numbers
      *
-     * @return CommunicationNumbersType
+     * @return CommunicationNumbers
      */
     public function getCommunicationNumbers()
     {
@@ -369,7 +371,8 @@ class Person extends ADomElement
      */
     public function setCommunicationNumbers(array $communicationNumbers)
     {
-        $this->communicationNumbers[] = array('type' => 'CommunicationNumbersType', 'name' => 'communication_numbers', 'data' => $communicationNumbers);
+        $this->communicationNumbers = new CommunicationNumbers('CommunicationNumbers');
+        $this->communicationNumbers->addData($communicationNumbers);
 
         return $this;
     }
@@ -402,13 +405,15 @@ class Person extends ADomElement
             $this->extraInfo = array();
         }
 
-        $extraInfoType = null;
+        $ExtraInfo = null;
         foreach ($extraInfo as $info) {
             if (empty($info["name"]) || !isset($info["value"])) {
                 throw new \Exception("ExtraInfo requires 'name' and 'value' keys");
             }
 
-            $this->extraInfo[] = array('type' => 'ExtraInfoType', 'name' => 'ExtraInfo', 'data' => $info);
+            $infoType = new ExtraInfo();
+            $infoType->addData($info);
+            $this->extraInfo[] = $infoType;
         }
 
         return $this;

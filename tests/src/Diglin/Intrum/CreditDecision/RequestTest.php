@@ -53,6 +53,10 @@ class RequestTest extends \PHPUnit_Framework_TestCase
                     'country_code' => 'CH',
                     'town' => 'Schlieren',
                 ),
+                'communication_numbers' => array(
+                    'mobile' => '0786956643',
+                    'email' => 'support@diglin.com'
+                ),
                 'extra_info' => array(
                     array(
                         'name' => 'ORDERCLOSED',

@@ -75,7 +75,12 @@ class ADomElement extends \DOMElement implements \ArrayAccess
         return (array) $this->optionalProperties;
     }
 
-    public function appendDataProperties(array $data = null, ADomElement $object = null)
+    /**
+     * @param array $data
+     * @param ADomElement $object
+     * @return $this
+     */
+    public function addData(array $data, ADomElement $object = null)
     {
         if (is_null($object)) {
             $object = $this;
@@ -89,28 +94,46 @@ class ADomElement extends \DOMElement implements \ArrayAccess
                     $object->$method($value);
                 }
             }
+        }
 
-            $data = $object->getDataProperties();
-            foreach ($data as $key => $value) {
-                if (is_null($value) || $value == '') {
-                    continue;
-                }
+        return $this;
+    }
 
-                if (is_array($value)) {
-                    foreach ($value as $node) {
-                        $classname = 'Diglin\Intrum\CreditDecision\Request\Customer\\' . $node['type'];
-                        if (class_exists($classname)) {
-                            /* @var $node ADomElement */
-                            $child = $this->appendChild(new $classname($this->_normalizeProperty($node['name'])));
-                            $child->appendDataProperties($node['data'], $child);
-                        }
+    /**
+     * @param array $data
+     * @param ADomElement $object
+     * @return $this
+     */
+    public function appendDataProperties(array $data = null, ADomElement $object = null)
+    {
+        if (is_null($object)) {
+            $object = $this;
+        }
 
+        if (!is_null($data)) {
+            $this->addData($data, $object);
+        }
+
+        $dataProperties = $object->getDataProperties();
+        foreach ($dataProperties as $key => $value) {
+            if (is_null($value) || $value == '') {
+                continue;
+            }
+
+            if (is_array($value)) {
+                foreach ($value as $nodeName => $node) {
+                    if ($node instanceof ADomElement) {
+                        /* @var $child ADomElement */
+                        $child = $this->appendChild($node);
+                        $child->appendDataProperties($node->getDataProperties(false));
                     }
-                } else if (!$value instanceof \DOMElement) {
-                    $this->appendChild(new \DOMElement($key, $value));
-                } else {
-                    $this->appendChild($value);
                 }
+            } else if (!$value instanceof \DOMElement) {
+                $this->appendChild(new \DOMElement($key, $value));
+            } else {
+                /* @var $child ADomElement */
+                $child = $this->appendChild($value);
+                $child->appendDataProperties($value->getDataProperties());
             }
         }
 
@@ -122,7 +145,7 @@ class ADomElement extends \DOMElement implements \ArrayAccess
      *
      * @return array
      */
-    public function getDataProperties()
+    public function getDataProperties($keepObject = true)
     {
         $data = array();
         $reflect = new \ReflectionObject($this);
@@ -141,14 +164,14 @@ class ADomElement extends \DOMElement implements \ArrayAccess
                 $value = $this->$method();
             }
 
-            if ($value instanceof ADomElement) {
-                $value = $value->getDataProperties();
+            if ($value instanceof ADomElement && !$keepObject) {
+                $value = $value->getDataProperties($keepObject);
             }
 
             if (is_array($value)) {
                 foreach ($value as $key => $item) {
-                    if ($item instanceof ADomElement) {
-                        $value[$key] = $item->getDataProperties();
+                    if ($item instanceof ADomElement && !$keepObject) {
+                        $value[$key] = $item->getDataProperties($keepObject);
                     }
                 }
             }

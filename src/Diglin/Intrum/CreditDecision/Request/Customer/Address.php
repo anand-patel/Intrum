@@ -23,10 +23,10 @@ namespace Diglin\Intrum\CreditDecision\Request\Customer;
 use Diglin\Intrum\CreditDecision\Request\ADomElement;
 
 /**
- * Class AddressType
+ * Class Address
  * @package Diglin\Intrum\Request\Customer
  */
-class AddressType extends ADomElement
+class Address extends ADomElement
 {
     /**
      * @var string
