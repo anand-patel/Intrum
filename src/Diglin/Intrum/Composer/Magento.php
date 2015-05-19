@@ -16,7 +16,6 @@
  * @category    Diglin
  * @package     Diglin_Intrum
  * @copyright   Copyright (c) 2011-2015 Diglin (http://www.diglin.com)
- * @license     http://opensource.org/licenses/gpl-3.0 GNU General Public License, version 3 (GPLv3)
  */
 namespace Diglin\Intrum\Composer;
 
