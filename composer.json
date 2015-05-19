@@ -18,8 +18,8 @@
     "require": {
         "php": ">5.3.2",
         "ext-dom": "*",
-        "ext-curl": ">=7.34",
         "ext-mbstring": "*",
+        "lib-curl": ">=7.34",
         "lib-libxml": ">2.6.0"
     },
     "require-dev": {
