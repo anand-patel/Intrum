@@ -18,7 +18,7 @@
     "require": {
         "php": ">5.3.2",
         "ext-dom": "*",
-        "ext-curl": "*",
+        "ext-curl": ">=7.34",
         "ext-mbstring": "*",
         "lib-libxml": ">2.6.0"
     },
