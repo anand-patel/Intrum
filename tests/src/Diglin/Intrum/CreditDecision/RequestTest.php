@@ -22,7 +22,7 @@ namespace Diglin\Intrum\CreditDecision;
 
 /**
  * Class RequestTest
- * @package Diglin\Ricardo\Managers
+ * @package Diglin\Intrum\CreditDecision
  */
 class RequestTest extends \PHPUnit_Framework_TestCase
 {
