@@ -74,9 +74,13 @@ class Transport
 //            CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0,
             CURLOPT_HTTPHEADER => array('Content-Length' => mb_strlen($content), 'Host' => 'intrum.com'),
-            CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1_2, // only for curl lib > 7.34
             CURLOPT_TIMEOUT => $timeout,
         );
+        
+        $curlVersion = curl_version();
+        if (version_compare($curlVersion['version'], '7.34', '>=')) {
+        	$options[CURLOPT_SSLVERSION] = CURL_SSLVERSION_TLSv1_2;
+        }
 
         curl_setopt_array($ch, $options);
 

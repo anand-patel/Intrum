@@ -19,7 +19,7 @@
         "php": ">5.3.2",
         "ext-dom": "*",
         "ext-mbstring": "*",
-        "lib-curl": ">=7.34",
+        "lib-curl": "*",
         "lib-libxml": ">2.6.0"
     },
     "require-dev": {
