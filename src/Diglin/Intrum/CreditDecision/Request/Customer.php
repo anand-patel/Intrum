@@ -60,7 +60,7 @@ class Customer extends ADomElement
      * Append Company to Customer
      *
      * @param $data
-     * @return Person|\DOMNode
+     * @return Company|\DOMNode
      */
     public function appendCompany($data)
     {

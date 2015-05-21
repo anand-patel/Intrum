@@ -19,8 +19,6 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
     protected $xmlError;
 
-    protected $data = array();
-
     protected function setUp()
     {
         $this->xml = <<<XML

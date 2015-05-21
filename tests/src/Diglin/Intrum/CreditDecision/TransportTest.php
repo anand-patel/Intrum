@@ -2,22 +2,34 @@
 /**
  * Diglin GmbH - Switzerland
  *
+ * This file is part of a Diglin_Intrum module.
+ *
+ * This Diglin GmbH module is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License version 3 as
+ * published by the Free Software Foundation.
+ *
+ * This script is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
  * @author      Sylvain Rayé <support at diglin.com>
  * @category    Diglin
  * @package     Diglin_Intrum
  * @copyright   Copyright (c) 2011-2015 Diglin (http://www.diglin.com)
+ * @license     http://opensource.org/licenses/gpl-3.0 GNU General Public License, version 3 (GPLv3)
  */
 namespace Diglin\Intrum\CreditDecision;
 
 /**
- * Class RequestTest
+ * Class TransportTest
  * @package Diglin\Intrum\CreditDecision
  */
-class RequestTest extends \PHPUnit_Framework_TestCase
+class TransportTest extends \PHPUnit_Framework_TestCase
 {
     protected $config;
 
-    protected $dataPerson  = array();
+    protected $data = array();
+
     protected $dataCompany = array();
 
     protected function setUp()
@@ -29,7 +41,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->config->email = 'support@diglin.com';
         $this->config->password = 'myMagento77';
 
-        $this->dataPerson = array(
+        $this->data = array(
             'customer_reference' => 'my reference',
             'person' => array(
                 'first_name' => 'Sylvain',
@@ -37,11 +49,11 @@ class RequestTest extends \PHPUnit_Framework_TestCase
                 'gender' => 1,
                 'date_of_birth' => '', // DD.MM.YYYY
                 'current_address' => array(
-                    'first_line' => 'Rütistasse',
-                    'house_number' => '14',
-                    'post_code' => '8952',
+                    'first_line' => 'Bremgarterstrasse',
+                    'house_number' => '62',
+                    'post_code' => '8967',
                     'country_code' => 'CH',
-                    'town' => 'Schlieren',
+                    'town' => 'Widen',
                 ),
                 'communication_numbers' => array(
                     'mobile' => '0786956643',
@@ -67,28 +79,28 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->dataCompany = array(
             'customer_reference' => 'my reference',
             'company' => array(
-                'company_name1' => 'Diglin GmbH',
+                'company_name1' => 'Silverbogen AG',
                 'current_address' => array(
-                    'first_line' => 'Rütistasse',
-                    'house_number' => '14',
-                    'post_code' => '8952',
+                    'first_line' => 'Via Grava 12',
+//                    'house_number' => '',
+                    'post_code' => '7031',
                     'country_code' => 'CH',
-                    'town' => 'Schlieren',
+                    'town' => 'Laax',
                 ),
                 'ordering_person' => array(
-                    'function' => 1,
+                    'function' => 1, // CEO
                     'person' => array(
                         'first_name' => 'Sylvain',
                         'last_name' => 'Rayé',
                         'gender' => 1,
                         'date_of_birth' => '', // DD.MM.YYYY
-                        'current_address' => array(
-                            'first_line' => 'Rütistasse',
-                            'house_number' => '14',
-                            'post_code' => '8952',
-                            'country_code' => 'CH',
-                            'town' => 'Schlieren',
-                        ),
+//                        'current_address' => array(
+//                            'first_line' => 'Rütistasse',
+//                            'house_number' => '14',
+//                            'post_code' => '8952',
+//                            'country_code' => 'CH',
+//                            'town' => 'Schlieren',
+//                        ),
                         'communication_numbers' => array(
                             'mobile' => '0786956643',
                             'email' => 'support@diglin.com'
@@ -111,11 +123,10 @@ class RequestTest extends \PHPUnit_Framework_TestCase
                 )
             )
         );
-
         parent::setUp();
     }
 
-    public function testCreateXmlDocumentPerson()
+    public function testTransport()
     {
         $dom = new \DOMDocument("1.0", "UTF-8");
 
@@ -128,17 +139,22 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request->setEmail($this->config->email);
         $request->setRequestId($this->config->requestId);
 
-        $request->createRequest($this->dataPerson);
+        $request->createRequest($this->data);
 
-//        libxml_use_internal_errors(false);
-//        $dom->schemaValidate($request->getNoNamespaceSchemaLocation());
-//        print $dom->saveXML();
+        $tranport = new Transport();
+        $responseRequest = $tranport->sendRequest($dom);
 
-        libxml_use_internal_errors(true);
-        $this->assertTrue($dom->schemaValidate($request->getNoNamespaceSchemaLocation()), 'DOM Document not valid for Person');
+        $response = new Response();
+        $response->setRawResponse($responseRequest);
+        $response->processResponse();
+
+//        echo $response->getRawResponse();
+
+        $this->assertContains('<Response', $response->getRawResponse(), 'No response found');
+        $this->assertEquals(2, $response->getCustomerRequestStatus(), 'Expected Customer Request status is not 2');
     }
 
-    public function testCreateXmlDocumentCompany()
+    public function testTransportCompany()
     {
         $dom = new \DOMDocument("1.0", "UTF-8");
 
@@ -153,11 +169,16 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
         $request->createRequest($this->dataCompany);
 
-//        libxml_use_internal_errors(false);
-//        $dom->schemaValidate($request->getNoNamespaceSchemaLocation());
-//        print $dom->saveXML();
+        $tranport = new Transport();
+        $responseRequest = $tranport->sendRequest($dom);
 
-        libxml_use_internal_errors(true);
-        $this->assertTrue($dom->schemaValidate($request->getNoNamespaceSchemaLocation()), 'DOM Document not valid for Company');
+        $response = new Response();
+        $response->setRawResponse($responseRequest);
+        $response->processResponse();
+
+//        echo $response->getRawResponse();
+
+        $this->assertContains('<Response', $response->getRawResponse(), 'No response found');
+        $this->assertEquals(2, $response->getCustomerRequestStatus(), 'Expected Customer Request status is not 2');
     }
 }

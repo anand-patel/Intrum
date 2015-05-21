@@ -78,6 +78,13 @@ class ADomElement extends \DOMElement implements \ArrayAccess
         if (!is_null($data)) {
             foreach ($data as $key => $value) {
                 $getValue = null;
+
+                $method = $this->_getGetterMethod($key);
+                $dataObject = $object->$method();
+                if (!empty($dataObject) || empty($value)) {
+                    continue;
+                }
+
                 $method = $this->_getSetterMethod($key);
                 if (is_callable(array($object, $method))) {
                     $object->$method($value);
@@ -111,11 +118,33 @@ class ADomElement extends \DOMElement implements \ArrayAccess
 
             if (is_array($value)) {
                 foreach ($value as $nodeName => $node) {
+                    if (!is_numeric($nodeName)) {
+                        $elementValue = null;
+                        if ($node instanceof ADomElement || !is_array($node)) {
+                            $elementValue = $node;
+                        }
+                        $appendChildNode = $this->appendChild(new ADomElement($nodeName, $elementValue));
+                    }
+
+                    if (!isset($appendChildNode)) {
+                        $appendChildNode = $this;
+                    }
+
                     if ($node instanceof ADomElement) {
                         /* @var $child ADomElement */
-                        $child = $this->appendChild($node);
+                        $child = $appendChildNode->appendChild($node);
                         $child->appendDataProperties($node->getDataProperties(false));
+                    } else if (is_array($node)) {
+                        foreach ($node as $itemName => $item) {
+                            if ($item instanceof \DOMElement) {
+                                $child = $appendChildNode->appendChild($item);
+                                $child->appendDataProperties($item->getDataProperties(false));
+                            } else {
+                                $appendChildNode->appendChild(new ADomElement($itemName, $item));
+                            }
+                        }
                     }
+                    $appendChildNode = null;
                 }
             } else if (!$value instanceof \DOMElement) {
                 $this->appendChild(new \DOMElement($key, $value));

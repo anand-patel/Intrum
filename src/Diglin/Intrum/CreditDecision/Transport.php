@@ -62,7 +62,7 @@ class Transport
             $url = self::INTRUM_URL . self::CREDITCHECK_RESPONSE_TEST;
         }
 
-        $content = urlencode('REQUEST=' . $xmlRequest);
+        $content = 'REQUEST=' . urlencode($xmlRequest);
 
         $options = array(
             CURLOPT_URL => $url,
