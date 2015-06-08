@@ -94,13 +94,6 @@ class TransportTest extends \PHPUnit_Framework_TestCase
                         'last_name' => 'Rayé',
                         'gender' => 1,
                         'date_of_birth' => '', // DD.MM.YYYY
-//                        'current_address' => array(
-//                            'first_line' => 'Rütistasse',
-//                            'house_number' => '14',
-//                            'post_code' => '8952',
-//                            'country_code' => 'CH',
-//                            'town' => 'Schlieren',
-//                        ),
                         'communication_numbers' => array(
                             'mobile' => '0786956643',
                             'email' => 'support@diglin.com'
