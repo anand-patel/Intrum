@@ -78,8 +78,10 @@ class Transport
         );
         
         $curlVersion = curl_version();
-        if (version_compare($curlVersion['version'], '7.34', '>=')) {
+        if (version_compare($curlVersion['version'], '7.34', '>=') && version_compare(PHP_VERSION, '5.5.19', '>=')) {
         	$options[CURLOPT_SSLVERSION] = CURL_SSLVERSION_TLSv1_2;
+        } else {
+            $options[CURLOPT_SSLVERSION] = CURL_SSLVERSION_TLSv1;
         }
 
         curl_setopt_array($ch, $options);
