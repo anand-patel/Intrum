@@ -71,6 +71,34 @@ class TransportTest extends \PHPUnit_Framework_TestCase
                     array(
                         'name' => 'ORDERCURRENCY',
                         'value' => 'CHF'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_FIRSTNAME',
+                        'value' => 'Sylvain'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_LASTNAME',
+                        'value' => 'Rayé'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_FIRSTLINE',
+                        'value' => 'Rütistasse 14'
+                    ),
+//                    array(
+//                        'name' => 'DELIVERY_HOUSENUMBER',
+//                        'value' => '' // If empty error on API side
+//                    ),
+                    array(
+                        'name' => 'DELIVERY_COUNTRYCODE',
+                        'value' => 'CH'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_POSTCODE',
+                        'value' => '8952'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_TOWN',
+                        'value' => 'Schlieren'
                     )
                 )
             )
@@ -141,7 +169,7 @@ class TransportTest extends \PHPUnit_Framework_TestCase
         $response->setRawResponse($responseRequest);
         $response->processResponse();
 
-//        echo $response->getRawResponse();
+        echo $response->getRawResponse();
 
         $this->assertContains('<Response', $response->getRawResponse(), 'No response found');
         $this->assertEquals(2, $response->getCustomerRequestStatus(), 'Expected Customer Request status is not 2');

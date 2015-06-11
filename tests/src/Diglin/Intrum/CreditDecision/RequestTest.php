@@ -59,6 +59,34 @@ class RequestTest extends \PHPUnit_Framework_TestCase
                     array(
                         'name' => 'ORDERCURRENCY',
                         'value' => 'CHF'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_FIRSTNAME',
+                        'value' => 'Sylvain'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_LASTNAME',
+                        'value' => 'Rayé'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_FIRSTLINE',
+                        'value' => 'Rütistasse 14'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_HOUSENUMBER',
+                        'value' => '' // If empty error on API side
+                    ),
+                    array(
+                        'name' => 'DELIVERY_COUNTRYCODE',
+                        'value' => 'CH'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_POSTCODE',
+                        'value' => '8952'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_TOWN',
+                        'value' => 'Schlieren'
                     )
                 )
             )
@@ -107,6 +135,34 @@ class RequestTest extends \PHPUnit_Framework_TestCase
                     array(
                         'name' => 'ORDERCURRENCY',
                         'value' => 'CHF'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_FIRSTNAME',
+                        'value' => 'Sylvain'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_LASTNAME',
+                        'value' => 'Rayé'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_FIRSTLINE',
+                        'value' => 'Rütistasse 14'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_HOUSENUMBER',
+                        'value' => ''
+                    ),
+                    array(
+                        'name' => 'DELIVERY_COUNTRYCODE',
+                        'value' => 'CH'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_POSTCODE',
+                        'value' => '8952'
+                    ),
+                    array(
+                        'name' => 'DELIVERY_TOWN',
+                        'value' => 'Schlieren'
                     )
                 )
             )
@@ -132,7 +188,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
 //        libxml_use_internal_errors(false);
 //        $dom->schemaValidate($request->getNoNamespaceSchemaLocation());
-//        print $dom->saveXML();
+        print $dom->saveXML();DIE();
 
         libxml_use_internal_errors(true);
         $this->assertTrue($dom->schemaValidate($request->getNoNamespaceSchemaLocation()), 'DOM Document not valid for Person');
