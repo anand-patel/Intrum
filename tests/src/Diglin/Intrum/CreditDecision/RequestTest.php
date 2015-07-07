@@ -35,7 +35,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
                 'first_name' => 'Sylvain',
                 'last_name' => 'Rayé',
                 'gender' => 1,
-                'date_of_birth' => '', // DD.MM.YYYY
+                'date_of_birth' => '1980-06-05', // YYYY-MM-DD
                 'current_address' => array(
                     'first_line' => 'Rütistasse',
                     'house_number' => '14',
@@ -109,7 +109,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
                         'first_name' => 'Sylvain',
                         'last_name' => 'Rayé',
                         'gender' => 1,
-                        'date_of_birth' => '', // DD.MM.YYYY
+                        'date_of_birth' => '05.06.1980', // DD.MM.YYYY
                         'current_address' => array(
                             'first_line' => 'Rütistasse',
                             'house_number' => '14',
@@ -188,7 +188,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
 //        libxml_use_internal_errors(false);
 //        $dom->schemaValidate($request->getNoNamespaceSchemaLocation());
-        print $dom->saveXML();DIE();
+//        print $dom->saveXML();
+//        die();
 
         libxml_use_internal_errors(true);
         $this->assertTrue($dom->schemaValidate($request->getNoNamespaceSchemaLocation()), 'DOM Document not valid for Person');
